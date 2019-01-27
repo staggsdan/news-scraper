@@ -20,8 +20,9 @@ app.use(express.static("public"));
 
 // Connect to the Mongo DB
 
+var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
 
-mongoose.connect("mongodb://localhost/populatedb", { useNewUrlParser: true });
+mongoose.connect(MONGODB_URI);
 console.log("works to here");
 
 // Routes
