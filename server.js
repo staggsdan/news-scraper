@@ -1,29 +1,59 @@
-
-
+// npms
 const express = require("express");
 const logger = require("morgan");
 const mongoose = require("mongoose");
 const axios = require("axios");
 const cheerio = require("cheerio");
 
+app.use(logger('dev'));
+app.use(bodyParser.urlencoded({
+  extended: false
+}));
 
-const db = require("./models");
-const PORT = (3000 || process.env.PORT);
-// const MONGODB = process.env.MONGODB;
+app.use(express.static('public'));
 
-const app = express();
+var databaseUri = 'mongodb://localhost/';
 
-app.use(logger("dev"));
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-app.use(express.static("public"));
+if (process.env.MONGODB_URI){
+  mongoose.connect(process.env.MONGODB_URI);
 
-// Connect to the Mongo DB
+} else {
+  mongoose.connect(databaseUri);
+}
 
-var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
+var db = mongoose.connection;
 
-mongoose.connect(MONGODB_URI);
-console.log("works to here");
+db.on('error', function(err){
+  console.log("mongoose error: ", err);
+  
+});
+
+db.once('open', function(){
+  console.log('mongoose connection successful.')''
+})
+
+
+// the below is what I had but it wsn't working. Trying now with the mongodb heroku deployment guide from slack
+
+// const db = require("./models");
+// const PORT = (3000 || process.env.PORT);
+// // const MONGODB = process.env.MONGODB;
+
+// const app = express();
+
+// app.use(logger("dev"));
+
+
+// app.use(express.urlencoded({ extended: true }));
+// app.use(express.json());
+// app.use(express.static("public"));
+
+// // Connect to the Mongo DB
+
+// var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
+
+// mongoose.connect(MONGODB_URI);g
+// console.log("works to here");
 
 // Routes
 
